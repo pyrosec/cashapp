@@ -1,0 +1,2 @@
+declare const KeysetHandle: any, aead: any, aeadSubtle: any, binary: any, binaryInsecure: any, generateNewKeysetHandle: any, hybrid: any, mac: any, macSubtle: any, signature: any, signatureSubtle: any, testing: any, getKeyManager: any;
+export { KeysetHandle, aead, aeadSubtle, binary, binaryInsecure, generateNewKeysetHandle, hybrid, mac, macSubtle, signature, signatureSubtle, testing, getKeyManager };
