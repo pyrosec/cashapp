@@ -15,7 +15,7 @@ import {
 } from "./tink";
 import { createSafetyNetPayload } from "./safetynet";
 import { Buffer } from "buffer";
-import DEVICE_LIST from "./fingerprints.json";
+import DEVICE_LIST from "android-fingerprints";
 import { getLogger } from "./logger";
 import fs from "fs";
 import { SocksProxyAgent } from "socks-proxy-agent";

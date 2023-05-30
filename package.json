@@ -23,6 +23,7 @@
     "typescript": "^4.8.3"
   },
   "dependencies": {
+    "android-fingerprints": "https://github.com/pyrosec/android-fingerprints",
     "atob": "^2.1.2",
     "axios": "^0.27.2",
     "btoa": "^1.2.1",
