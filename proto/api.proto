@@ -1,3 +1,4 @@
+import "google/protobuf/any.proto";
 syntax = "proto3";
 package cashapp;
 enum UiAliasType {
@@ -1435,13 +1436,13 @@ message FormBlockerElementDateInputElement {
   string default_value = 5;
 }
 message AnimationFill {
-  Image lottie_asset = 1;
+  UiImage lottie_asset = 1;
 }
 message AnimationInset {
-  Image lottie_asset = 1;
+  UiImage lottie_asset = 1;
 }
 message AnimationFixed {
-  Image lottie_asset = 1;
+  UiImage lottie_asset = 1;
   int32 width = 2;
   int32 height = 3;
 }
@@ -3558,7 +3559,7 @@ message UiCustomer {
   InvestmentEntityData investment_entity_data = 23;
   Region region = 24;
   int64 customer_joined_on = 25;
-  Image photo = 26;
+  UiImage photo = 26;
   Color themed_accent_color = 27;
 }
 enum Orientation {
@@ -5112,7 +5113,7 @@ message SyncInvestmentEntity {
   repeated SyncInvestmentEntityDetailRow about_detail_rows = 10;
   bool delisted = 11;
   Color entity_color = 12;
-  Image icon = 13;
+  UiImage icon = 13;
   Color themed_color = 14;
   SyncInvestmentEntityReleaseStage release_stage = 15;
 }
@@ -7379,7 +7380,7 @@ message BankingTabBankingOption {
   string id = 1;
   string main_text = 2;
   string secondary_text = 3;
-  Image image = 4;
+  UiImage image = 4;
   BankingTabAppearance appearance = 5;
   BankingTabClientScenarioAction client_scenario_action = 6;
   BankingTabDialog dialog = 7;
@@ -7415,7 +7416,7 @@ message BankingTabTaxesOption {
   string id = 1;
   string main_text = 2;
   string secondary_text = 3;
-  Image image = 4;
+  UiImage image = 4;
   BankingTabAppearance appearance = 5;
   BankingTabClientRouteAction client_route_action = 6;
   bool is_badged = 7;
@@ -7735,7 +7736,7 @@ message SavingsConfigNullState {
 }
 message SavingsConfig {
   SavingsConfigNullState no_folder_null_state = 1;
-  Animation goal_celebration_animation = 2;
+  google.protobuf.Any goal_celebration_animation = 2;
 }
 enum SavingsHomeSavingsOptionsSectionSavingsOptionRowRowImage {
   option allow_alias = true;

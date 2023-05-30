@@ -2800,7 +2800,7 @@
                 "AnimationFill": {
                     "fields": {
                         "lottieAsset": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 1
                         }
                     }
@@ -2808,7 +2808,7 @@
                 "AnimationInset": {
                     "fields": {
                         "lottieAsset": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 1
                         }
                     }
@@ -2816,7 +2816,7 @@
                 "AnimationFixed": {
                     "fields": {
                         "lottieAsset": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 1
                         },
                         "width": {
@@ -8507,7 +8507,7 @@
                             "id": 25
                         },
                         "photo": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 26
                         },
                         "themedAccentColor": {
@@ -12765,7 +12765,7 @@
                             "id": 12
                         },
                         "icon": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 13
                         },
                         "themedColor": {
@@ -17773,7 +17773,7 @@
                             "id": 3
                         },
                         "image": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 4
                         },
                         "appearance": {
@@ -17880,7 +17880,7 @@
                             "id": 3
                         },
                         "image": {
-                            "type": "Image",
+                            "type": "UiImage",
                             "id": 4
                         },
                         "appearance": {
@@ -18830,7 +18830,7 @@
                             "id": 1
                         },
                         "goalCelebrationAnimation": {
-                            "type": "Animation",
+                            "type": "google.protobuf.Any",
                             "id": 2
                         }
                     }
@@ -25439,6 +25439,26 @@
                             "rule": "repeated",
                             "type": "RecipientSelectorSearchResponseSection",
                             "id": 1
+                        }
+                    }
+                }
+            }
+        },
+        "google": {
+            "nested": {
+                "protobuf": {
+                    "nested": {
+                        "Any": {
+                            "fields": {
+                                "type_url": {
+                                    "type": "string",
+                                    "id": 1
+                                },
+                                "value": {
+                                    "type": "bytes",
+                                    "id": 2
+                                }
+                            }
                         }
                     }
                 }
