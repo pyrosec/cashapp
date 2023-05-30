@@ -85,11 +85,18 @@ export async function callAPI(command, data) {
   const cashapp = await loadSession();
   const camelCommand = camelCase(command);
   const json = data.j || data.json;
+  const repl = data.repl;
   delete data.j
   delete data.json;
+  delete data.repl;
   if (!cashapp[camelCommand]) throw Error('command not foud: ' + command);
   const result = await cashapp[camelCommand](data);
-  if (json) console.log(JSON.stringify(result, null, 2));
+  if (repl) {
+    const r = require('repl').start('> ');
+    r.context.result = result;
+    await new Promise(() => {});
+    return result;
+  } else if (json) console.log(JSON.stringify(result, null, 2));
   else logger.info(result);
   if (camelCommand === 'getProfile') await saveSession(cashapp, json);
   return result;
