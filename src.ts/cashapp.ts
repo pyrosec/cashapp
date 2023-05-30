@@ -97,7 +97,7 @@ export class CashAppClient {
   static LOCALE = "en_US";
   static COMMIT_SHA = "7f13016d";
   static CASHAPP_VERSION = "3.90.1";
-  static DEFAULT_ANDROID_VERSION = 'Android 11';
+  static DEFAULT_ANDROID_VERSION = "Android 11";
   static SQUARE_DEVICE_INFO = null;
   static X_DEVICE_ID = null;
   static DEFAULT_TIMEZONE = "America/Chicago";
@@ -148,7 +148,10 @@ export class CashAppClient {
       options.flowToken || (this.constructor as any).randomCashFlowToken();
     this.profileToken = options.profileToken || null;
     this.proxyOptions = options.proxyOptions || null;
-    this.allKnownRanges = options.allKnownRanges && options.allKnownRanges.map((v) => Buffer.from(ethers.toBeArray(v))) || [];
+    this.allKnownRanges =
+      (options.allKnownRanges &&
+        options.allKnownRanges.map((v) => Buffer.from(ethers.toBeArray(v)))) ||
+      [];
   }
   toObject() {
     return {
@@ -293,7 +296,9 @@ export class CashAppClient {
       data
     );
     const payload = await (this.constructor as any)._gzipBody(data);
-    const agent = this.proxyOptions ? new SocksProxyAgent(this.proxyOptions) : null;
+    const agent = this.proxyOptions
+      ? new SocksProxyAgent(this.proxyOptions)
+      : null;
     const response = await axios.post(
       "https://" + (this.constructor as any).BASE_URL + path,
       payload,
@@ -321,22 +326,26 @@ export class CashAppClient {
                 Authorization: this.authorization,
               }
             : {},
-	  payload.length > 8192 ? {
-	    'Content-Length': payload.length
-	  } : {},
+          payload.length > 8192
+            ? {
+                "Content-Length": payload.length,
+              }
+            : {},
           headers || {}
         ),
-	agent,
+        agent,
         responseType: "arraybuffer",
       }
     );
     return response;
   }
   async ipinfo() {
-    const agent = this.proxyOptions ? new SocksProxyAgent(this.proxyOptions) : null;
-    const response = await axios.get('https://ipinfo.io/json', {
-      responseType: 'json',
-      agent
+    const agent = this.proxyOptions
+      ? new SocksProxyAgent(this.proxyOptions)
+      : null;
+    const response = await axios.get("https://ipinfo.io/json", {
+      responseType: "json",
+      agent,
     });
     if (response.status === 200) return response.data;
     else return response;
@@ -450,7 +459,10 @@ export class CashAppClient {
     cashFlowToken,
   }) {
     const payload = protocol.ApplyRewardCodeRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       requestAuthFlowTriggersMobileUrl,
     }).finish();
     const response = await this._call(
@@ -467,7 +479,10 @@ export class CashAppClient {
   }
   async cancelPayment({ requestContext, paymentToken }) {
     const payload = protocol.CancelPaymentRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       paymentToken,
     }).finish();
     const response = await this._call("/2.0/cash/cancel-payment", payload);
@@ -493,7 +508,10 @@ export class CashAppClient {
   }
   async claimPayment({ requestContext, paymentToken, instrumentSelection }) {
     const payload = protocol.ClaimByPaymentTokenRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       paymentToken,
       instrumentSelection,
     }).finish();
@@ -615,7 +633,10 @@ export class CashAppClient {
   }
   async endFlow({ requestContext, actionId }) {
     const payload = protocol.EndFlowRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       actionId,
     }).finish();
     const response = await this._call("/2.0/cash/end-flow", payload);
@@ -757,7 +778,10 @@ export class CashAppClient {
   }
   async finishInstantPaycheckDirectDepositSwitch({ requestContext }) {
     const payload = protocol.FinishInstantPayDirectDepositSwitchRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/cash-app/instant-pay/finish-direct-deposit-switch",
@@ -775,7 +799,10 @@ export class CashAppClient {
     onSuccessResponse,
   }) {
     const payload = protocol.FinishPinwheelLinkRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       linkToken,
       onLoginResponse,
       onExitResponse,
@@ -791,7 +818,10 @@ export class CashAppClient {
   }
   async finishTutorial({ requestContext }) {
     const payload = protocol.FinishTutorialRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call("/cash-app/finish-tutorial", payload);
     return protocol.FinishTutorialResponse.decode(
@@ -822,7 +852,10 @@ export class CashAppClient {
   }
   async getFlow({ requestContext, initiationData, flowType }) {
     const payload = protocol.GetFlowRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       initiationData,
       flowType,
     }).finish();
@@ -885,7 +918,10 @@ export class CashAppClient {
   }
   async getScenarioPlan({ requestContext }) {
     const payload = protocol.GetScenarioPlanRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call("/2.0/cash/get-scenario-plan", payload);
     return protocol.GetScenarioPlanResponse.decode(
@@ -1078,7 +1114,10 @@ export class CashAppClient {
   }
   async oauthResolveFlow({ requestContext, flowType, urlContents }) {
     const payload = protocol.OauthResolveFlowRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       flowType,
       urlContents,
     }).finish();
@@ -1260,7 +1299,10 @@ export class CashAppClient {
   }
   async selectActivity({ requestContext, entityId }) {
     const payload = protocol.SelectActivityRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       entityId,
     }).finish();
     const response = await this._call("/cash-app/select-activity", payload);
@@ -1313,7 +1355,10 @@ export class CashAppClient {
   }
   async selectSponsors({ requestContext, sponsors }) {
     const payload = protocol.SelectSponsorsRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       sponsors,
     }).finish();
     const response = await this._call("/2.0/cash/select-sponsors", payload);
@@ -1323,7 +1368,10 @@ export class CashAppClient {
   }
   async setAmount({ requestContext, amountResult, percentageResult }) {
     const payload = protocol.SetAmountRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       amountResult,
       percentageResult,
     }).finish();
@@ -1332,7 +1380,10 @@ export class CashAppClient {
   }
   async setAppMessagePreference({ requestContext, notificationsEnabled }) {
     const payload = protocol.SetAppMessagePreferenceRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       notificationsEnabled,
     }).finish();
     const response = await this._call(
@@ -1405,7 +1456,10 @@ export class CashAppClient {
   }
   async setCashtagUrlEnabled({ requestContext, enabled }) {
     const payload = protocol.SetCashtagUrlEnabledRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       enabled,
     }).finish();
     const response = await this._call(
@@ -1418,7 +1472,10 @@ export class CashAppClient {
   }
   async setCountry({ requestContext, countryCode }) {
     const payload = protocol.SetCountryRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       countryCode,
     }).finish();
     const response = await this._call("/2.0/cash/set-country", payload);
@@ -1426,7 +1483,10 @@ export class CashAppClient {
   }
   async setIncomingRequestPolicy({ requestContext, incomingRequestPolicy }) {
     const payload = protocol.SetIncomingRequestPolicyRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       incomingRequestPolicy,
     }).finish();
     const response = await this._call(
@@ -1523,7 +1583,10 @@ export class CashAppClient {
   }
   async setSignature({ requestContext, imageBytes, mimeType }) {
     const payload = protocol.SetSignatureRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       imageBytes,
       mimeType,
     }).finish();
@@ -1534,7 +1597,10 @@ export class CashAppClient {
   }
   async submitFileset({ requestContext, actionId, fileTokens }) {
     const payload = protocol.SubmitFilesetRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       actionId,
       fileTokens,
     }).finish();
@@ -1550,7 +1616,10 @@ export class CashAppClient {
     selectedFallbackResult,
   }) {
     const payload = protocol.SubmitPayrollProviderSelectionRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       query,
       selectedPayrollProvider,
       selectedFallbackResult,
@@ -1579,7 +1648,10 @@ export class CashAppClient {
   }
   async unlinkBusiness({ requestContext, grantId }) {
     const payload = protocol.UnlinkBusinessRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       grantId,
     }).finish();
     const response = await this._call(
@@ -1592,7 +1664,10 @@ export class CashAppClient {
   }
   async unlockReward({ rewardToken, requestContext }) {
     const payload = protocol.UnlockRewardRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       rewardToken,
     }).finish();
     const response = await this._call("/2.0/cash/unlock-reward", payload);
@@ -1600,20 +1675,35 @@ export class CashAppClient {
       responseToBuffer(response.data)
     );
   }
-  async unregisterAlias({ profileToken, cashClientScenario, cashFlowToken, canonicalText, type, alias, requestContext }) {
+  async unregisterAlias({
+    profileToken,
+    cashClientScenario,
+    cashFlowToken,
+    canonicalText,
+    type,
+    alias,
+    requestContext,
+  }) {
     const payload = protocol.UnregisterAliasRequest.encode({
       alias: alias || {
         canonicalText,
-	type: type || 1
+        type: type || 1,
       },
       requestContext: requestContext || {
         allKnownRanges: this.allKnownRanges || [],
-	profileToken: profileToken || this.profileToken,
-	skippedBlockers: [],
-	paymentTokens: []
+        profileToken: profileToken || this.profileToken,
+        skippedBlockers: [],
+        paymentTokens: [],
       },
     }).finish();
-    const response = await this._call("/2.0/cash/unregister-alias", payload, (this.constructor as any).headersFromScenario(cashClientScenario || 'PROFILE', cashFlowToken || this.flowToken));
+    const response = await this._call(
+      "/2.0/cash/unregister-alias",
+      payload,
+      (this.constructor as any).headersFromScenario(
+        cashClientScenario || "PROFILE",
+        cashFlowToken || this.flowToken
+      )
+    );
     return protocol.UnregisterAliasResponse.decode(
       responseToBuffer(response.data)
     );
@@ -1773,7 +1863,10 @@ export class CashAppClient {
   }
   async verifyContacts({ requestContext, hashedAliases }) {
     const payload = protocol.VerifyContactsRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       hashedAliases,
     }).finish();
     const response = await this._call("/2.0/cash/verify-contacts", payload);
@@ -1950,7 +2043,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [ Buffer.from('12080a06332e37342e30') ],
+        allKnownRanges: [Buffer.from("12080a06332e37342e30")],
         blockerDescriptorId: blockerDescriptorId || "government_id",
         profileToken: profileToken || this.profileToken,
       },
@@ -1966,7 +2059,9 @@ export class CashAppClient {
         cashFlowToken || this.flowToken
       )
     );
-    return protocol.VerifyGovernmentIdResponse.decode(responseToBuffer(response.data));
+    return protocol.VerifyGovernmentIdResponse.decode(
+      responseToBuffer(response.data)
+    );
   }
   async verifyIdentity({
     name,
@@ -2062,15 +2157,16 @@ export class CashAppClient {
     expirationDate,
     profileToken,
     cashClientScenario,
-    cashFlowToken
+    cashFlowToken,
   }) {
     const payload = protocol.VerifyPasscodeAndExpirationRequest.encode({
       requestContext: requestContext || {
         profileToken: profileToken || this.profileToken,
-	allKnownRanges: this.allKnownRanges || [],
-	paymentTokens: [],
-	skippedBlockers: [],
-	blockerDescriptorId: blockerDescriptorId || 'card_passcode_and_expiration'
+        allKnownRanges: this.allKnownRanges || [],
+        paymentTokens: [],
+        skippedBlockers: [],
+        blockerDescriptorId:
+          blockerDescriptorId || "card_passcode_and_expiration",
       },
       passcode,
       expirationDate,
@@ -2078,7 +2174,10 @@ export class CashAppClient {
     const response = await this._call(
       "/2.0/cash/verify-passcode-and-expiration",
       payload,
-      (this.constructor as any).headersFromScenario(cashClientScenario || 'ACTIVATE_PHYSICAL_CARD', cashFlowToken || this.flowToken)
+      (this.constructor as any).headersFromScenario(
+        cashClientScenario || "ACTIVATE_PHYSICAL_CARD",
+        cashFlowToken || this.flowToken
+      )
     );
     return protocol.VerifyPasscodeAndExpirationResponse.decode(
       responseToBuffer(response.data)
@@ -2182,7 +2281,10 @@ export class CashAppClient {
   }
   async initiatePasscodeReset({ requestContext }) {
     const payload = protocol.InitiatePasscodeResetRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/2.0/cash/initiate-passcode-reset",
@@ -2283,7 +2385,10 @@ export class CashAppClient {
     investmentIncentiveToken,
   }) {
     const payload = protocol.InitiateInvestmentOrderRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       investmentEntityToken,
       instrumentToken,
       idempotenceToken,
@@ -2309,7 +2414,10 @@ export class CashAppClient {
     action,
   }) {
     const payload = protocol.UpdateInvestmentHoldingRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       investmentEntityToken,
       action,
     }).finish();
@@ -2323,7 +2431,10 @@ export class CashAppClient {
   }
   async checkCreditLimit({ requestContext }) {
     const payload = protocol.CheckCreditLimitRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/cash-app/lending/check-credit-limit",
@@ -2335,7 +2446,10 @@ export class CashAppClient {
   }
   async clearCreditLineAlert({ requestContext }) {
     const payload = protocol.ClearCreditLineAlertRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/2.0/cash/lending/clear-credit-line-alert",
@@ -2347,7 +2461,10 @@ export class CashAppClient {
   }
   async clearCreditLineBadge({ requestContext }) {
     const payload = protocol.ClearCreditLineBadgeRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/2.0/cash/lending/clear-credit-line-badge",
@@ -2359,7 +2476,10 @@ export class CashAppClient {
   }
   async clearInstrumentBadge({ requestContext }) {
     const payload = protocol.ClearInstrumentBadgeRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/cash-app/lending/clear-instrument-badge",
@@ -2389,7 +2509,10 @@ export class CashAppClient {
     opaqueData,
   }) {
     const payload = protocol.InitiateLoanPaymentRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       loanToken,
       idempotenceToken,
       paymentAmount,
@@ -2412,7 +2535,10 @@ export class CashAppClient {
     amount,
   }) {
     const payload = protocol.InitiateLoanRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       idempotenceToken,
       amount,
       creditLineToken,
@@ -2427,7 +2553,10 @@ export class CashAppClient {
   }
   async lendingConfigRoutingResolved({ requestContext }) {
     const payload = protocol.LendingConfigRoutingResolvedRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/cash-app/lending/lending-config-routing-resolved",
@@ -2439,7 +2568,10 @@ export class CashAppClient {
   }
   async skipLoanPayment({ requestContext, loanTransactionToken }) {
     const payload = protocol.SkipLoanPaymentRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       loanTransactionToken,
     }).finish();
     const response = await this._call(
@@ -2459,7 +2591,10 @@ export class CashAppClient {
     debugMessage,
   }) {
     const payload = protocol.ResolvePersonaDidvBlockerRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       inquiryResponse,
       inquiryId,
       status,
@@ -2482,7 +2617,10 @@ export class CashAppClient {
     securityCode,
   }) {
     const payload = protocol.HandleThreeDomainSecureRedirectRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       redirectUrl,
       transactionType,
       transactionId,
@@ -2505,7 +2643,10 @@ export class CashAppClient {
     error,
   }) {
     const payload = protocol.HandleThreeDomainSecureV2ActionRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
       actionDetails,
       transactionType,
       transactionId,
@@ -2769,7 +2910,10 @@ export class CashAppClient {
   }
   async getCustomerInvestingSettings({ requestContext }) {
     const payload = protocol.GetCustomerInvestingSettingsRequest.encode({
-      requestContext,
+      requestContext: this._requestContextFromDescriptor(
+        undefined,
+        requestContext
+      ),
     }).finish();
     const response = await this._call(
       "/2.0/cash/investing/get-customer-settings",

@@ -99,9 +99,9 @@ export declare class CashAppClient {
         } | {
             Authorization?: undefined;
         }) & ({
-            'Content-Length': any;
+            "Content-Length": any;
         } | {
-            'Content-Length'?: undefined;
+            "Content-Length"?: undefined;
         });
         agent: SocksProxyAgent;
         responseType: "arraybuffer";
@@ -210,9 +210,9 @@ export declare class CashAppClient {
         } | {
             Authorization?: undefined;
         }) & ({
-            'Content-Length': any;
+            "Content-Length": any;
         } | {
-            'Content-Length'?: undefined;
+            "Content-Length"?: undefined;
         });
         agent: SocksProxyAgent;
         responseType: "arraybuffer";
@@ -549,7 +549,7 @@ export declare class CashAppClient {
         rewardToken: any;
         requestContext: any;
     }): Promise<any>;
-    unregisterAlias({ profileToken, cashClientScenario, cashFlowToken, canonicalText, type, alias, requestContext }: {
+    unregisterAlias({ profileToken, cashClientScenario, cashFlowToken, canonicalText, type, alias, requestContext, }: {
         profileToken: any;
         cashClientScenario: any;
         cashFlowToken: any;
@@ -671,7 +671,7 @@ export declare class CashAppClient {
         cashFlowToken: any;
         cashClientScenario: any;
     }): Promise<any>;
-    verifyPasscodeAndExpiration({ requestContext, passcode, blockerDescriptorId, expirationDate, profileToken, cashClientScenario, cashFlowToken }: {
+    verifyPasscodeAndExpiration({ requestContext, passcode, blockerDescriptorId, expirationDate, profileToken, cashClientScenario, cashFlowToken, }: {
         requestContext: any;
         passcode: any;
         blockerDescriptorId: any;
