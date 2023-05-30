@@ -96,7 +96,7 @@ export class CashAppClient {
   static LOCALE = "en_US";
   static COMMIT_SHA = "7f13016d";
   static CASHAPP_VERSION = "3.90.1";
-  static DEFAULT_ANDROID_VERSION = null;
+  static DEFAULT_ANDROID_VERSION = 'Android 11';
   static SQUARE_DEVICE_INFO = null;
   static X_DEVICE_ID = null;
   static DEFAULT_TIMEZONE = "America/Chicago";

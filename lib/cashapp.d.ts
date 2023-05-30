@@ -13,7 +13,7 @@ export declare class CashAppClient {
     static LOCALE: string;
     static COMMIT_SHA: string;
     static CASHAPP_VERSION: string;
-    static DEFAULT_ANDROID_VERSION: any;
+    static DEFAULT_ANDROID_VERSION: string;
     static SQUARE_DEVICE_INFO: any;
     static X_DEVICE_ID: any;
     static DEFAULT_TIMEZONE: string;
