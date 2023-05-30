@@ -98,7 +98,7 @@ export async function callAPI(command, data) {
     return result;
   } else if (json) console.log(JSON.stringify(result, null, 2));
   else logger.info(result);
-  if (camelCommand === 'getProfile') await saveSession(cashapp, json);
+  await saveSession(cashapp, json);
   return result;
 }
 

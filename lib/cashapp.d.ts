@@ -34,6 +34,7 @@ export declare class CashAppClient {
     flowToken: string | null;
     profileToken: string | null;
     proxyOptions: any;
+    allKnownRanges: Buffer[];
     constructor(options?: any);
     toObject(): {
         device: {
@@ -49,6 +50,7 @@ export declare class CashAppClient {
         authorization: string;
         profileToken: string;
         backupTag: string;
+        allKnownRanges: string[];
         deviceKey: string;
         safetyNetNonce: string;
     };
@@ -61,7 +63,7 @@ export declare class CashAppClient {
     static getRandomDevice(): string;
     _getPublicKey(): any;
     static headersFromScenario(cashClientScenario: any, cashFlowToken: any, headers: any): any;
-    static requestContextFromDescriptor(blockerDescriptorId: any, requestContext: any): any;
+    _requestContextFromDescriptor(blockerDescriptorId: any, requestContext: any): any;
     getPaymentGetter({ cashtag }: {
         cashtag: any;
     }): Promise<{

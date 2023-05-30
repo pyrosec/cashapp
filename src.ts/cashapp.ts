@@ -19,6 +19,7 @@ import DEVICE_LIST from "./fingerprints.json";
 import { getLogger } from "./logger";
 import fs from "fs";
 import { SocksProxyAgent } from "socks-proxy-agent";
+import { ethers } from "ethers";
 const logger = getLogger();
 hybrid.register();
 
@@ -117,6 +118,7 @@ export class CashAppClient {
   public flowToken: string | null;
   public profileToken: string | null;
   public proxyOptions: any;
+  public allKnownRanges: Buffer[];
   constructor(options: any = {}) {
     const random = randomDevice();
     this.device =
@@ -146,6 +148,7 @@ export class CashAppClient {
       options.flowToken || (this.constructor as any).randomCashFlowToken();
     this.profileToken = options.profileToken || null;
     this.proxyOptions = options.proxyOptions || null;
+    this.allKnownRanges = options.allKnownRanges && options.allKnownRanges.map((v) => Buffer.from(ethers.toBeArray(v))) || [];
   }
   toObject() {
     return {
@@ -159,6 +162,7 @@ export class CashAppClient {
       authorization: this.authorization,
       profileToken: this.profileToken,
       backupTag: this.backupTag,
+      allKnownRanges: this.allKnownRanges.map((v) => ethers.hexlify(v)),
       deviceKey: Buffer.from(
         this.deviceKey.getKeyset().serializeBinary()
       ).toString("base64"),
@@ -166,7 +170,7 @@ export class CashAppClient {
     };
   }
   toJSON() {
-    return JSON.stringify(this.toObject());
+    return JSON.stringify(this.toObject(), null, 2);
   }
   static fromObject(data) {
     const deviceKey = binaryInsecure.deserializeKeyset(data.deviceKey);
@@ -234,11 +238,11 @@ export class CashAppClient {
       }
     );
   }
-  static requestContextFromDescriptor(blockerDescriptorId, requestContext) {
+  _requestContextFromDescriptor(blockerDescriptorId, requestContext) {
     return Object.assign(
       {
         skippedBlockers: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: [],
       },
       {
@@ -356,7 +360,7 @@ export class CashAppClient {
       appToken: appToken || appTokenFetched.split(" ")[1],
       sessionToken: sessionToken || sessionTokenSplit.join("-"),
       notificationPreference,
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId,
         requestContext
       ),
@@ -377,7 +381,7 @@ export class CashAppClient {
     blockerDescriptorId,
   }) {
     const payload = protocol.ActivateDigitalWalletRequest.encode({
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId,
         requestContext
       ),
@@ -400,7 +404,7 @@ export class CashAppClient {
     blockerDescriptorId,
   }) {
     const payload = protocol.AddOrUpdateRewardRequest.encode({
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId,
         requestContext
       ),
@@ -417,7 +421,7 @@ export class CashAppClient {
   }
   async addReaction({ requestContext, reaction, blockerDescriptorId }) {
     const payload = protocol.AddReactionRequest.encode({
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId,
         requestContext
       ),
@@ -429,7 +433,7 @@ export class CashAppClient {
   async applyRewardCode({ code, requestContext, blockerDescriptorId }) {
     const payload = protocol.ApplyRewardCodeRequest.encode({
       code,
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId,
         requestContext
       ),
@@ -524,7 +528,7 @@ export class CashAppClient {
         skippedBlockers: [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
       },
     }).finish();
     const response = await this._call(
@@ -594,7 +598,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: paymentTokens || [paymentToken].filter(Boolean),
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: blockerDescriptorId || "confirm.requires_passcode",
       },
@@ -635,7 +639,7 @@ export class CashAppClient {
       targetAmount,
       requestContext: requestContext || {
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         skippedBlockers: [],
       },
@@ -963,7 +967,7 @@ export class CashAppClient {
         undefined,
       requestContext: requestContext || {
         skippedBlockers: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         paymentTokens: [],
         signalsContext: {
@@ -1055,7 +1059,7 @@ export class CashAppClient {
       ocrContext,
       instrumentType,
       transferToken,
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId || "card_blocker",
         requestContext
       ),
@@ -1196,7 +1200,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         paymentTokens: [],
         skippedBlockers: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId,
       },
@@ -1288,7 +1292,7 @@ export class CashAppClient {
       paymentTokens: paymentTokens || [],
       transferToken,
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: paymentTokens || [],
         skippedBlockers: [],
         profileToken: profileToken || this.profileToken,
@@ -1377,7 +1381,7 @@ export class CashAppClient {
         height: 0,
       },
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         skippedBlockers: [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
@@ -1603,7 +1607,7 @@ export class CashAppClient {
 	type: type || 1
       },
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
 	profileToken: profileToken || this.profileToken,
 	skippedBlockers: [],
 	paymentTokens: []
@@ -1750,7 +1754,7 @@ export class CashAppClient {
       paymentTokens: paymentTokens || [],
       transferToken,
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
         skippedBlockers: [],
@@ -1988,7 +1992,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: blockerDescriptorId || "identity_verification",
       },
@@ -2034,7 +2038,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
       },
       verificationToken,
       customerRequestedDenyAttempt,
@@ -2063,7 +2067,7 @@ export class CashAppClient {
     const payload = protocol.VerifyPasscodeAndExpirationRequest.encode({
       requestContext: requestContext || {
         profileToken: profileToken || this.profileToken,
-	allKnownRanges: [],
+	allKnownRanges: this.allKnownRanges || [],
 	paymentTokens: [],
 	skippedBlockers: [],
 	blockerDescriptorId: blockerDescriptorId || 'card_passcode_and_expiration'
@@ -2091,7 +2095,7 @@ export class CashAppClient {
     const payload = protocol.VerifyPasscodeRequest.encode({
       requestContext: requestContext || {
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         skippedBlockers: [],
         blockerDescriptorId: blockerDescriptorId || "passcode_verification",
       },
@@ -2123,7 +2127,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         profileToken: profileToken || this.profileToken,
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         skippedBlockers: [],
       },
       missingQrCodeToLocateCvv: missingQrCodeToLocateCvv || 0,
@@ -2159,7 +2163,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: blockerDescriptorId || "phone_verification",
       },
@@ -2623,7 +2627,7 @@ export class CashAppClient {
       requestContext: {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
       },
     }).finish();
     return protocol.RegisterEmailResponse.decode(
@@ -2653,7 +2657,7 @@ export class CashAppClient {
     blockerDescriptorId,
   }) {
     const payload = protocol.VerifyEmailRequest.encode({
-      requestContext: (this.constructor as any).requestContextFromDescriptor(
+      requestContext: this._requestContextFromDescriptor(
         blockerDescriptorId || "email_verification",
         requestContext
       ),
@@ -2752,14 +2756,16 @@ export class CashAppClient {
     const payload = protocol.SyncEntitiesRequest.encode({
       newestToken,
       oldestToken,
-      allKnownRanges,
+      allKnownRanges: allKnownRanges || this.allKnownRanges || [],
       isProtocolChangeSafe,
       trigger,
     }).finish();
     const response = await this._call("/2.0/cash/sync-entities", payload);
-    return protocol.SyncEntitiesResponse.decode(
+    const decoded = protocol.SyncEntitiesResponse.decode(
       responseToBuffer(response.data)
     );
+    this.allKnownRanges = decoded.allKnownRanges;
+    return decoded;
   }
   async getCustomerInvestingSettings({ requestContext }) {
     const payload = protocol.GetCustomerInvestingSettingsRequest.encode({
@@ -2794,7 +2800,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         blockerDescriptorId:
           blockerDescriptorId || requestContext.blockerDescriptorId || "",
       },
@@ -2844,7 +2850,7 @@ export class CashAppClient {
         },
       ],
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: "SUBMIT_MAILING_ADDRESS_WITH_CARD_CUSTOMIZATION",
       },
@@ -2861,7 +2867,7 @@ export class CashAppClient {
   }) {
     const payload = protocol.SelectOptionRequest.encode({
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: "SUBMIT_MAILING_ADDRESS_WITH_CARD_CUSTOMIZATION",
@@ -2891,7 +2897,7 @@ export class CashAppClient {
   }) {
     const payload = protocol.SetFullNameRequest.encode({
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: "name",
@@ -2918,7 +2924,7 @@ export class CashAppClient {
   }) {
     const payload = protocol.ConfirmDisclosureRequest.encode({
       requestContext: requestContext || {
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
         blockerDescriptorId: "confirm_disclosure",
@@ -3057,7 +3063,7 @@ export class CashAppClient {
         skippedBlockers: [],
         paymentTokens: [],
         profileToken: profileToken || this.profileToken,
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         blockerDescriptorId,
       },
       actionId,
@@ -3108,7 +3114,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         blockerDescriptorId: "set_cashtag",
       },
     }).finish();
@@ -3173,7 +3179,7 @@ export class CashAppClient {
       requestContext: requestContext || {
         skippedBlockers: [],
         paymentTokens: [],
-        allKnownRanges: [],
+        allKnownRanges: this.allKnownRanges || [],
         blockerDescriptorId: blockerDescriptorId || "set_postal_code",
       },
       validated: 0,
