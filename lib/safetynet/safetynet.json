@@ -1,0 +1,94 @@
+{
+    "options": {
+        "java_package": "org.microg.gms.safetynet",
+        "java_outer_classname": "SafetyNetProto"
+    },
+    "nested": {
+        "SELinuxState": {
+            "fields": {
+                "supported": {
+                    "type": "bool",
+                    "id": 1
+                },
+                "enabled": {
+                    "type": "bool",
+                    "id": 2
+                }
+            }
+        },
+        "FileState": {
+            "fields": {
+                "fileName": {
+                    "type": "string",
+                    "id": 1
+                },
+                "digest": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "SafetyNetData": {
+            "fields": {
+                "nonce": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "packageName": {
+                    "type": "string",
+                    "id": 2
+                },
+                "signatureDigest": {
+                    "rule": "repeated",
+                    "type": "bytes",
+                    "id": 3
+                },
+                "fileDigest": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "gmsVersionCode": {
+                    "type": "int32",
+                    "id": 5
+                },
+                "suCandidates": {
+                    "rule": "repeated",
+                    "type": "FileState",
+                    "id": 6
+                },
+                "seLinuxState": {
+                    "type": "SELinuxState",
+                    "id": 7
+                },
+                "currentTimeMs": {
+                    "type": "int64",
+                    "id": 8
+                },
+                "googleCn": {
+                    "type": "bool",
+                    "id": 9
+                }
+            }
+        },
+        "AttestRequest": {
+            "fields": {
+                "safetyNetData": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "droidGuardResult": {
+                    "type": "string",
+                    "id": 2
+                }
+            }
+        },
+        "AttestResponse": {
+            "fields": {
+                "result": {
+                    "type": "string",
+                    "id": 2
+                }
+            }
+        }
+    }
+}
